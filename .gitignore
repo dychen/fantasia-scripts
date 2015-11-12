@@ -1,0 +1,7 @@
+venv
+*.swp
+*.pyc
+nba/ownership
+nba/plots
+nba/results
+nba/salaries
