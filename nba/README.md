@@ -27,3 +27,13 @@ https://www.draftkings.com/contest/gamecenter/14386861 47k
 11/13/2015
 https://www.draftkings.com/contest/gamecenter/14506050 115k
 https://www.draftkings.com/contest/gamecenter/14463982 71k
+11/14/2015
+https://www.draftkings.com/contest/gamecenter/14588685 77k
+https://www.draftkings.com/contest/gamecenter/14579894 47k
+11/15/2015
+https://www.draftkings.com/contest/gamecenter/14695491 48k
+https://www.draftkings.com/contest/gamecenter/14672378 24k
+11/16/2015
+https://www.draftkings.com/contest/gamecenter/14817702 77k
+https://www.draftkings.com/contest/gamecenter/14800700 71k
+
