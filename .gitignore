@@ -1,6 +1,7 @@
 venv
 *.swp
 *.pyc
+.DS_Store
 nba/ownership
 nba/plots
 nba/results
