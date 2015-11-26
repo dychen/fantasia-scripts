@@ -2,7 +2,7 @@ import argparse
 import math
 from csv import reader
 import numpy
-from utils import get_weighted_score, load_salaries, load_results
+from utils import get_prize_map, get_weighted_score, load_salaries, load_results
 
 def analyze_results(results, f):
     scores = {}
@@ -21,16 +21,18 @@ def analyze_results(results, f):
 def get_weighted_scores(ids):
     # sum(log(dollars_per_player_i) / N for i in N)
     scores_weighted_all = {}
-    #multipliers = [i / 10.0 + 0.55 for i in range(10)]
+    mean = numpy.mean([i for i, _ in enumerate(ids)])
     for i, contest_id in enumerate(ids):
         results = load_results('results/contest-standings-%s.csv' % contest_id)
         numentries = len(results)
+        prize_map = get_prize_map(numentries)
+        print contest_id, numentries
+        # Weights: [0, ..., 2]
+        weight = 1 # i / mean
         scores_weighted = analyze_results(
             results,
-            lambda x: sum([get_weighted_score(y, numentries) for y in x])
-                      / float(len(x))
-            #lambda x: sum([get_weighted_score(y, numentries) for y in x])
-            #          / float(len(x)) * multipliers[i]
+            lambda x: sum([get_weighted_score(y, prize_map) for y in x])
+                      / float(len(x)) * weight
         )
         for player, score in scores_weighted.iteritems():
             if player in scores_weighted_all:
@@ -39,16 +41,16 @@ def get_weighted_scores(ids):
                 scores_weighted_all[player] = [score]
     for player, scores in scores_weighted_all.iteritems():
         scores_weighted_all[player] = (
-            #numpy.mean([math.log(abs(s)) * numpy.sign(s) for s in scores]),
-            numpy.mean(scores),
+            numpy.median(scores),
+            #numpy.mean(scores),
             len(scores)
         )
     # Return { player: (score, num data) }
     return scores_weighted_all
 
-def run_weighted(ids):
+def run_weighted(ids, filename, verbose=False):
     print "Calculated weighted scores..."
-    salaries = load_salaries('salaries/dk_nba_salaries_2015_11_16.csv')
+    salaries = load_salaries(filename)
     weighted_scores = get_weighted_scores(ids)
     sorted_scores = sorted(weighted_scores.items(), key=lambda x: x[1],
                            reverse=True)
@@ -56,10 +58,10 @@ def run_weighted(ids):
         if player in salaries:
             print ('\t%s\t%.4f\t%d\t%s' % (player[:15], score[0], score[1],
                                            salaries[player]))
-        else:
+        elif verbose:
             print '\t%s\t%.4f\t%d' % (player[:15], score[0], score[1])
 
-def run_deltas(curr_ids, prev_ids):
+def run_deltas(curr_ids, prev_ids, filename, verbose=False):
     print "Calculating deltas..."
     scores_curr = get_weighted_scores(curr_ids)
     scores_prev = get_weighted_scores(prev_ids)
@@ -68,20 +70,22 @@ def run_deltas(curr_ids, prev_ids):
         if player in scores_curr and player in scores_prev:
             deltas[player] = (scores_curr[player][0] - scores_prev[player][0],
                               scores_curr[player][1])
-    salaries = load_salaries('salaries/dk_nba_salaries_2015_11_16.csv')
+    salaries = load_salaries(filename)
     sorted_deltas = sorted(deltas.items(), key=lambda x: x[1], reverse=True)
     for player, delta in sorted_deltas:
-        if player in salaries:
-            print ('\t%s\t%.4f\t%d\t%s' % (player[:15], delta[0], delta[1],
-                                           salaries[player]))
-        else:
-            print '\t%s\t%.4f\t%d' % (player[:15], delta[0], delta[1])
+        if delta[0] > 0:
+            if player in salaries:
+                print ('\t%s\t%.4f\t%d\t%s' % (player[:15], delta[0], delta[1],
+                                               salaries[player]))
+            elif verbose:
+                print '\t%s\t%.4f\t%d' % (player[:15], delta[0], delta[1])
     return deltas
 
 def run():
     salaries = load_salaries('salaries/dk_nba_salaries_2015_11_07.csv')
     results = load_results('results/contest-standings-13876064.csv')
     numentries = len(results)
+    prize_map = get_prize_map(numentries)
     scores_mean = analyze_results(
         results, lambda x: numpy.mean(x) / len(results)
     )
@@ -90,7 +94,7 @@ def run():
     )
     scores_weighted = analyze_results(
         results,
-        lambda x: sum([get_weighted_score(y, numentries) for y in x])
+        lambda x: sum([get_weighted_score(y, prize_map) for y in x])
                   / float(len(x))
     )
     sorted_mean = sorted(scores_mean.items(), key=lambda x: x[1],
@@ -136,15 +140,33 @@ def run():
                    % (player[:15], scores_mean[player],
                       scores_own[player] * 100, weighted_score))
 
+"""
+Public API
+"""
+
+def get_scores(ids):
+    return {
+        player: score_tup[0]
+        for player, score_tup in get_weighted_scores(ids).iteritems()
+    }
+
+
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--weighted', action='store_const', const=True)
     parser.add_argument('--deltas', action='store_const', const=True)
+    parser.add_argument('--limit', type=int)
+    parser.add_argument('--salaries', type=str)
+    parser.add_argument('--verbose', action='store_const', const=True)
     args = parser.parse_args()
 
+    ids = ['14817702', '14898424', '15000601', '15097932', '15187303',
+           '15278337', '15381517', '15509296', '15588376', '15702613']
+
     if args.weighted:
-        run_weighted(['13772929', '13876064', '13986906', '14116266', '14199909',
-                      '14306948', '14407111', '14506050', '14588685', '14695491'])
+        if args.limit:
+            run_weighted(ids[-args.limit:], args.salaries, args.verbose)
+        else:
+            run_weighted(ids, args.salaries, args.verbose)
     if args.deltas:
-        run_deltas(['14306948', '14407111', '14506050', '14588685', '14695491'],
-                   ['14199909', '14306948', '14407111', '14506050', '14588685'])
+        run_deltas(ids[5:], ids[2:7], args.salaries, args.verbose)

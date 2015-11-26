@@ -73,6 +73,38 @@ PRIZES_48K = {
     9626: 0
 }
 
+PRIZES_57K = {
+    1: 12000.00,
+    2: 8000.00,
+    3: 5000.00,
+    4: 4000.00,
+    5: 3000.00,
+    6: 2000.00,
+    7: 1000.00,
+    9: 750.00,
+    11: 500.00,
+    16: 400.00,
+    21: 300.00,
+    31: 200.00,
+    41: 100.00,
+    61: 80.00,
+    81: 60.00,
+    101: 50.00,
+    131: 40.00,
+    171: 35.00,
+    221: 30.00,
+    291: 25.00,
+    381: 20.00,
+    581: 15.00,
+    981: 12.00,
+    1481: 10.00,
+    2281: 9.00,
+    3281: 8.00,
+    4781: 7.00,
+    6781: 6.00,
+    11781: 0
+}
+
 PRIZES_77K = {
     1: 15000.00,
     2: 10000.00,
@@ -212,19 +244,67 @@ PRIZES_134K = {
     30141: 0
 }
 
-def get_weighted_score(index, numentries):
-    if numentries > 133000:
-        prize_map = PRIZES_134K
-    elif numentries > 114000:
-        prize_map = PRIZES_115K
-    elif numentries > 95000:
-        prize_map = PRIZES_96K
-    elif numentries > 76000:
-        prize_map = PRIZES_77K
-    elif numentries > 47000:
-        prize_map = PRIZES_48K
-    elif numentries > 37000:
-        prize_map = PRIZES_38K
+PRIZES_153K = {
+    1: 50000.00,
+    2: 30000.00,
+    3: 20000.00,
+    4: 15000.00,
+    5: 10000.00,
+    6: 7500.00,
+    7: 5000.00,
+    9: 3000.00,
+    11: 2000.00,
+    16: 1000.00,
+    21: 750.00,
+    26: 500.00,
+    36: 300.00,
+    46: 200.00,
+    66: 150.00,
+    86: 100.00,
+    111: 75.00,
+    141: 60.00,
+    191: 50.00,
+    241: 40.00,
+    341: 30.00,
+    491: 20.00,
+    691: 15.00,
+    991: 12.00,
+    1491: 10.00,
+    2491: 9.00,
+    3991: 8.00,
+    5991: 7.00,
+    9991: 6.00,
+    16991: 5.00,
+    31991: 0
+}
+
+def get_prize_map(numentries):
+    if numentries < 39000:
+        print numentries, 'PRIZES_38K'
+        return PRIZES_38K
+    elif numentries < 49000:
+        print numentries, 'PRIZES_48K'
+        return PRIZES_48K
+    elif numentries < 58000:
+        print numentries, 'PRIZES_57K'
+        return PRIZES_57K
+    elif numentries < 78000:
+        print numentries, 'PRIZES_77K'
+        return PRIZES_77K
+    elif numentries < 97000:
+        print numentries, 'PRIZES_96K'
+        return PRIZES_96K
+    elif numentries < 116000:
+        print numentries, 'PRIZES_115K'
+        return PRIZES_115K
+    elif numentries < 135000:
+        print numentries, 'PRIZES_134K'
+        return PRIZES_134K
+    else:
+        print numentries, 'PRIZES_153K'
+        return PRIZES_153K
+
+def get_weighted_score(index, prize_map):
     target_rank = index + 1
     for rank in sorted(prize_map.keys())[::-1]:
         if target_rank >= rank:

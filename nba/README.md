@@ -36,4 +36,33 @@ https://www.draftkings.com/contest/gamecenter/14672378 24k
 11/16/2015
 https://www.draftkings.com/contest/gamecenter/14817702 77k
 https://www.draftkings.com/contest/gamecenter/14800700 71k
-
+11/17/2015
+https://www.draftkings.com/contest/gamecenter/14898424 134k
+https://www.draftkings.com/contest/gamecenter/14881724 71k
+11/18/2015
+https://www.draftkings.com/contest/gamecenter/15000601 115k
+https://www.draftkings.com/contest/gamecenter/14973664 71k
+11/19/2015
+https://www.draftkings.com/contest/gamecenter/15097932 96k
+https://www.draftkings.com/contest/gamecenter/15073354 71k
+11/20/2015
+https://www.draftkings.com/contest/gamecenter/15187303 115k
+https://www.draftkings.com/contest/gamecenter/15151314 94k
+11/21/2015
+https://www.draftkings.com/contest/gamecenter/15278337 77k
+https://www.draftkings.com/contest/gamecenter/15278427 24k
+11/22/2015
+https://www.draftkings.com/contest/gamecenter/15381517 57k
+https://www.draftkings.com/contest/gamecenter/15352657 24k
+11/23/2015
+https://www.draftkings.com/contest/gamecenter/15509296 96k
+https://www.draftkings.com/contest/gamecenter/15505841 71k
+11/24/2015
+https://www.draftkings.com/contest/gamecenter/15588376 153k
+https://www.draftkings.com/contest/gamecenter/15566839 94k
+11/25/2015
+https://www.draftkings.com/contest/gamecenter/15702613 96k
+https://www.draftkings.com/contest/gamecenter/15687685 71k
+11/26/2015
+https://www.draftkings.com/contest/gamecenter/15810643 96k
+https://www.draftkings.com/contest/gamecenter/15809391 71k
