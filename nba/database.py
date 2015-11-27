@@ -4,7 +4,8 @@ from csv import reader
 
 from sqlalchemy import create_engine, Column, ForeignKey, UniqueConstraint, \
     Integer, Unicode, String, Date
-from sqlalchemy.orm import scoped_session, sessionmaker, column_property
+from sqlalchemy.orm import scoped_session, sessionmaker, column_property, \
+    relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 DB_ENGINE = create_engine(os.environ['DATABASE_URL'], convert_unicode=True)
@@ -23,8 +24,11 @@ class Player(BASE):
     position = Column(String(2))
     team = Column(String(3))
 
+    def tostr(self):
+        return self.name
+
     def __repr__(self):
-        return '<Player %r>' % (self.name)
+        return '<Player: %s>' % self.tostr()
 
 class Injury(BASE):
     __tablename__ = 'injury'
@@ -34,11 +38,15 @@ class Injury(BASE):
     status = Column(String(20))
     date = Column(Date)
 
+    player = relationship('Player', foreign_keys=[player_id])
+
     __table_args__ = (UniqueConstraint('player_id', 'date'),)
 
+    def tostr(self):
+        return '%s %s %s' % (self.player.tostr(), str(self.date), self.status)
+
     def __repr__(self):
-        return ('<Injury %r %r %s>'
-                % (self.player.__repr__, self.date, self.status))
+        return '<Injury: %s>' % self.tostr()
 
 class InjuryComment(BASE):
     __tablename__ = 'injury_comment'
@@ -47,8 +55,13 @@ class InjuryComment(BASE):
     injury_id = Column(Integer, ForeignKey('injury.id'), nullable=False)
     comment = Column(Unicode(500))
 
+    injury = relationship('Injury', foreign_keys=[injury_id])
+
+    def tostr(self):
+        return '%s %s' % self.injury.tostr(), self.comment
+
     def __repr__(self):
-        return '<Injury %r %r %s>' % (self.injury.__repr__, self.comment)
+        return '<InjuryComment: %s>' % self.tostr()
 
 def add_new(model, fields, unique_fields):
     query = DB_SESSION.query(model)
@@ -60,6 +73,44 @@ def add_new(model, fields, unique_fields):
         print 'Added model %s' % fields
     else:
         print 'Duplicate found %s' % fields
+
+def get_model(model, **kwargs):
+    """
+    Equivalent of Django's get()
+    @param model: Model to update, e.g. Player
+    @param **kwargs: Parameters to check uniqueness on, e.g. {
+        'player': 'Time Duncan', 'position': 'PF'
+    }, call this with: get_model(..., name='Tim Duncan', position='PF')
+    """
+    return DB_SESSION.query(model).filter_by(**kwargs).first()
+
+def update_or_create(model, defaults={}, commit=True, **kwargs):
+    """
+    Equivalent of Django's update_or_create(), with an additional option to
+    commit the transaction (commits by default).
+    @param model: Model to update, e.g. Player
+    @param defaults: Parameters to update, e.g. { 'team': 'SA' }
+    @param commit: Commit the transaction?
+    @param **kwargs: Parameters to check uniqueness on, e.g. {
+        'player': 'Time Duncan', 'position': 'PF'
+    }, call this with:
+        update_or_create(..., name='Tim Duncan', position='PF')
+    """
+    model_instance = get_model(model, **kwargs)
+    if model_instance:
+        for arg, value in defaults.iteritems():
+            setattr(model_instance, arg, value)
+        if commit:
+            DB_SESSION.commit()
+        return model_instance, True
+    else:
+        params = { k: v for k, v in kwargs.iteritems() }
+        params.update(defaults)
+        model_instance = model(**params)
+        DB_SESSION.add(model_instance)
+        if commit:
+            DB_SESSION.commit()
+        return model_instance, False
 
 def init_db():
     print 'Creating database'

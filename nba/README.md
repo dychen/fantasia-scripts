@@ -2,6 +2,17 @@ Data collection process:
 1. Export CSV data for the daily DK Sharpshooter and Quarter Arcade contests.
 2. Export the salaries for the next day's contests.
 3. Run the `fs_scrape.py` task to get ownership and points from [fantasyscore.com](http://fantasyscore.com/top-players/basketball)
+4. Run the `injuries.py` task to get injury updates from [espn.com](http://espn.go.com/nba/injuries).
+
+Queries
+---
+# Injuries
+```
+SELECT name, status, date, comment
+FROM player JOIN injury ON player.id=injury.player_id
+    JOIN injury_comment ON injury.id=injury_comment.injury_id
+WHERE date='today';
+```
 
 11/6/2015
 https://www.draftkings.com/contest/gamecenter/13772929 115k
