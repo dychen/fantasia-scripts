@@ -161,11 +161,11 @@ def get_scores_with_freq(ids, min_games=0):
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weighted', action='store_const', const=True)
-    parser.add_argument('--deltas', action='store_const', const=True)
-    parser.add_argument('--limit', type=int)
-    parser.add_argument('--salaries', type=str)
-    parser.add_argument('--verbose', action='store_const', const=True)
+    parser.add_argument('-w', '--weighted', action='store_const', const=True)
+    parser.add_argument('-d', '--deltas', action='store_const', const=True)
+    parser.add_argument('-l', '--limit', type=int)
+    parser.add_argument('-s', '--salaries', type=str)
+    parser.add_argument('-v', '--verbose', action='store_const', const=True)
     args = parser.parse_args()
 
     ids = get_ids(args.limit) if args.limit else get_ids()

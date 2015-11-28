@@ -39,10 +39,13 @@ def scrape():
             if name != 'NAME' and status != 'STATUS' and datestr != 'DATE':
                 date = get_date(datestr)
                 player = get_model(Player, name=name)
-                injury, _ = update_or_create(Injury,
-                                             player_id=player.id,
-                                             date=date,
-                                             defaults={ 'status': status })
+                if player:
+                    injury, _ = update_or_create(Injury,
+                                                 player_id=player.id,
+                                                 date=date,
+                                                 defaults={ 'status': status })
+                else:
+                    print 'Couldn\'t find player %s' % name
         elif len(row) == 1:
             if 'Comment:' in row[0].contents[0].string and injury:
                 update_or_create(InjuryComment, injury_id=injury.id,
