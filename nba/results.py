@@ -145,12 +145,19 @@ def run():
 Public API
 """
 
-def get_scores(ids):
+def get_scores(ids, min_games=0):
     return {
         player: score_tup[0]
         for player, score_tup in get_weighted_scores(ids).iteritems()
+        if score_tup[1] >= min_games
     }
 
+def get_scores_with_freq(ids, min_games=0):
+    return {
+        player: score_tup
+        for player, score_tup in get_weighted_scores(ids).iteritems()
+        if score_tup[1] >= min_games
+    }
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
