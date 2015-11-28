@@ -1,13 +1,17 @@
 Data collection process:
+
 (Automated): Run `collect.py`:
+
 1. Export CSV data for the previous day's DK Sharpshooter and Quarter Arcade contests.
 2. Run the `fs_scrape.py` task to get ownership and points from [fantasyscore.com](http://fantasyscore.com/top-players/basketball)
 3. Run the `injuries.py` task to get injury updates from [espn.com](http://espn.go.com/nba/injuries).
+
 (Manual): Export the salaries for the next day's contests.
 
 Queries
 ---
-# Injuries
+Injuries
+
 ```
 SELECT name, status, date, comment
 FROM player JOIN injury ON player.id=injury.player_id
@@ -16,7 +20,12 @@ WHERE date='today' OR date='yesterday'
 ORDER BY date DESC, name;
 ```
 
-Contest Results
+Notes
+---
+* 11/28/2015 - Changed number of datasets queried in `results.py` from 10 to 6.
+* 11/28/2015 - Added injuries to the lineup creation process.
+
+Contest Results (script parse)
 ---
 11/6/2015
 https://www.draftkings.com/contest/gamecenter/13772929 115k
@@ -83,3 +92,7 @@ No data
 11/27/2015
 https://www.draftkings.com/contest/gamecenter/15810643 96k
 https://www.draftkings.com/contest/gamecenter/15809391 71k
+11/28/2015
+https://www.draftkings.com/contest/gamecenter/15974387 77k
+https://www.draftkings.com/contest/gamecenter/15953078 47k
+

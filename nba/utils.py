@@ -1,4 +1,7 @@
 from csv import reader
+import datetime
+import os
+import re
 
 STOP_WORDS = set(['PG', 'SG', 'SF', 'PF', 'C', 'F', 'G', 'UTIL'])
 
@@ -337,3 +340,21 @@ def load_results(filename):
                 if players:
                     results.append(players)
     return results
+
+def get_ids(limit=7, until=None):
+    # Defaults to today
+    until = until or datetime.date.today().strftime('%m/%d/%Y').lstrip('0')
+
+    # Get the first contest id after each date (the Daily Sharpshooter ids)
+    REGEX = r'\d{1,2}\/\d{1,2}\/\d{4}\nhttps://www.draftkings.com/[^ ]*/(\d*)'
+
+    def strip_text(text):
+        left_bound = 'Contest Results (script parse)'
+        right_bound = until
+        return text.split(left_bound)[1].split(right_bound)[0]
+
+    with open('%s/README.md' % os.environ['ROOT_DIR']) as f:
+        text = strip_text(''.join([line for line in f]))
+    ids = re.findall(REGEX, text)
+    return ids[-limit:]
+

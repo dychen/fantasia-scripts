@@ -2,7 +2,8 @@ import argparse
 import math
 from csv import reader
 import numpy
-from utils import get_prize_map, get_weighted_score, load_salaries, load_results
+from utils import get_prize_map, get_weighted_score, load_salaries,\
+    load_results, get_ids
 
 def analyze_results(results, f):
     scores = {}
@@ -160,8 +161,8 @@ if __name__=='__main__':
     parser.add_argument('--verbose', action='store_const', const=True)
     args = parser.parse_args()
 
-    ids = ['14817702', '14898424', '15000601', '15097932', '15187303',
-           '15278337', '15381517', '15509296', '15588376', '15702613']
+    ids = get_ids(args.limit) if args.limit else get_ids()
+    print 'Computing results with contests: %s' % ', '.join(ids)
 
     if args.weighted:
         if args.limit:
@@ -169,4 +170,5 @@ if __name__=='__main__':
         else:
             run_weighted(ids, args.salaries, args.verbose)
     if args.deltas:
-        run_deltas(ids[5:], ids[2:7], args.salaries, args.verbose)
+        limit = args.limit if args.limit else 7
+        run_deltas(ids[-limit+2:], ids[-limit:-2], args.salaries, args.verbose)
