@@ -57,6 +57,8 @@ class InjuryComment(BASE):
 
     injury = relationship('Injury', foreign_keys=[injury_id])
 
+    __table_args__ = (UniqueConstraint('injury_id', 'comment'),)
+
     def tostr(self):
         return '%s %s' % self.injury.tostr(), self.comment
 

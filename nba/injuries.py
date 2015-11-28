@@ -46,7 +46,7 @@ def scrape():
         elif len(row) == 1:
             if 'Comment:' in row[0].contents[0].string and injury:
                 update_or_create(InjuryComment, injury_id=injury.id,
-                                 comment=row[0].contents[-1])
+                                 comment=unicode(row[0].contents[-1]))
 
 if __name__=='__main__':
     scrape()
